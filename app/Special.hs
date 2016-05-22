@@ -18,10 +18,10 @@ matchDeath' (a:b:e:h:s:t:r:[]) =
     d = 1
  
 filterDeath =
-  map (zip "abdehstr") $ filter matchDeath $ permutation 8 [0,1,2,3,4,5,6,7,8,9]
+  map (zip "abdehstr") $ filter matchDeath  $ permutation 8 [0,1,2,3,4,5,6,7,8,9]
   
 filterDeath' =
-  map (zip "abehstr")  $ filter matchDeath'  $ permutation 7 [0,2,3,4,5,6,7,8,9]
+  map (zip "abehstr")  $ filter matchDeath' $ permutation 7 [0,2,3,4,5,6,7,8,9]
   
 
 main = print filterDeath
