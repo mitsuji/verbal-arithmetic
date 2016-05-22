@@ -1,35 +1,42 @@
-check_hukumen :: [Int] -> [String] -> [String]
-check_hukumen (a:b:d:e:h:s:t:r:[]) z =
+import Data.Maybe (maybeToList)
+  
+matchDeath :: [Int] -> Maybe [(Char,Int)]
+matchDeath (a:b:d:e:h:s:t:r:[]) =
   if d/=0 && s/=0 && debt + star == death
-  then expr:z else z
+  then Just [('a',a),('b',b),('d',d),('e',e),('h',h),('s',s),('t',t),('r',r)]
+  else Nothing
   where
     debt  =             d * 1000 + e * 100 + b * 10 + t
     star  =             s * 1000 + t * 100 + a * 10 + r
     death = d * 10000 + e * 1000 + a * 100 + t * 10 + h
-    expr  = show debt ++ "+" ++ show star ++ "=" ++ show death
 
-check_hukumen' :: [Int] -> [String] -> [String]
-check_hukumen' (a:b:e:h:s:t:r:[]) z =
+matchDeath' :: [Int] -> Maybe [(Char,Int)]
+matchDeath' (a:b:e:h:s:t:r:[]) =
   if debt + star == death
-  then expr:z else z
+  then Just [('a',a),('b',b),('d',d),('e',e),('h',h),('s',s),('t',t),('r',r)]
+  else Nothing
   where
     debt  =             d * 1000 + e * 100 + b * 10 + t
     star  =             s * 1000 + t * 100 + a * 10 + r
     death = d * 10000 + e * 1000 + a * 100 + t * 10 + h
-    expr  = show debt ++ "+" ++ show star ++ "=" ++ show death
     d = 1
 
-hukumen_solver :: [String]
-hukumen_solver = 
-  foldr check_hukumen [] (permutation 8 [0,1,2,3,4,5,6,7,8,9])
 
-hukumen_solver' :: [String]
-hukumen_solver' = 
-  foldr check_hukumen' [] (permutation 7 [0,2,3,4,5,6,7,8,9])
+filterDeath =
+  filterMatch matchDeath  $ permutation 8 [0,1,2,3,4,5,6,7,8,9]
+  
+filterDeath' =
+  filterMatch matchDeath' $ permutation 7 [0,2,3,4,5,6,7,8,9]
 
 
-main = print hukumen_solver'
 
+--main = print filterDeath
+main = print filterDeath'
+
+
+
+filterMatch :: ([Int] -> Maybe [(Char,Int)]) -> [[Int]] -> [[(Char,Int)]]
+filterMatch f = foldr (\x -> (maybeToList (f x) ++)) []
 
 select :: [a] -> [(a, [a])]
 select [x]    = [(x, [])]
