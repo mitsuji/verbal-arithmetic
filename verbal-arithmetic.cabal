@@ -1,6 +1,6 @@
 name:                verbal-arithmetic
 version:             0.1.0.0
-synopsis:            Initial project template from stack
+synopsis:            simple "verbal arithmetic" model by Haskell
 description:         Please see README.md
 homepage:            https://github.com/mitsuji/verbal-arithmetic#readme
 license:             BSD3
