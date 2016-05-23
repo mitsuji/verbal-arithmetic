@@ -24,8 +24,8 @@ filterDeath' =
   map (zip "abehstr")  $ filter matchDeath' $ permutation 7 [0,2,3,4,5,6,7,8,9]
   
 
-main = print filterDeath
---main = print filterDeath'
+--main = print filterDeath
+main = print filterDeath'
 
 
 select :: [a] -> [(a, [a])]
