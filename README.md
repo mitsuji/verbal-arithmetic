@@ -4,7 +4,7 @@
 
 $ stack runhaskell app/Special.hs
 
-$ stack runhaskell app/General.hs debt star death
+$ stack runhaskell app/General.hs "debt + star = death"
 
 
 ## build
@@ -21,5 +21,5 @@ $ stack install
 
 $ ~/.local/bin/verbal-arithmetic-special-exe
 
-$ ~/.local/bin/verbal-arithmetic-general-exe debt star death
+$ ~/.local/bin/verbal-arithmetic-general-exe "debt + star = death"
 
