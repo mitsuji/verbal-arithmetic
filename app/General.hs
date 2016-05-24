@@ -18,6 +18,13 @@ test3 = do
   ex1:ex2:ex3:_ <- getArgs
   print $ findConditions $ fromString ex1 + fromString ex2 == fromString ex3
 
+test4 = print $ findConditions $ "debt + star = death"
+
+test5 = print $ findConditions $ "send + more = money"
   
-main = test3
+test6 = do
+  equ:_ <- getArgs
+  print $ findConditions $ fromString equ
+
+main = test6
 

@@ -10,31 +10,72 @@ import Prelude hiding ((+),(-),(*),(==))
 import qualified Prelude as P
 import Data.String (IsString(fromString))
 import Data.List (nub,union)
+import Text.ParserCombinators.Parsec
+import Text.ParserCombinators.Parsec.Char
+
 
 data VExp = Val [Char]
           | Add VExp VExp
+          deriving(Show)
 
 data VEqu = Equals VExp VExp
+          deriving(Show)
             
 (+)  = Add
 (==) = Equals
        
 instance IsString VExp where
   fromString xs = Val xs
+  
+instance IsString VEqu where
+  fromString xs =
+    case parse pEquals "verbal" xs of
+      Right equ -> equ
+      Left  err -> error "error"
+
+equ1 :: VEqu 
+equ1 = Equals (Add (Val "debt") (Val "star")) (Val "death")
+
+equ2 :: VEqu 
+equ2 = Val "debt" `Add` Val "star" `Equals` Val "death"
+
+equ3 :: VEqu 
+equ3 = Val "debt" + Val "star" == Val "death"
+
+equ4 :: VEqu 
+equ4 = "debt" + "star" == "death"
+
+equ5 :: VEqu
+equ5 = "debt + star = death"
 
 
-exp1 :: VEqu 
-exp1 = Equals (Add (Val "debt") (Val "star")) (Val "death")
+  
+pVal :: Parser VExp
+pVal = do
+  xs <- many1 $ letter <|> alphaNum
+  return $ Val xs
 
-exp2 :: VEqu 
-exp2 = Val "debt" `Add` Val "star" `Equals` Val "death"
+pAdd :: Parser VExp
+pAdd = do
+  exp1 <- pVal
+  optional spaces
+  char '+'
+  optional spaces
+  exp2 <- pVal
+  return $ Add exp1 exp2
 
-exp3 :: VEqu 
-exp3 = Val "debt" + Val "star" == Val "death"
+pExp :: Parser VExp
+pExp = try pAdd <|> pVal
 
-exp4 :: VEqu 
-exp4 = "debt" + "star" == "death"
-
+pEquals :: Parser VEqu
+pEquals = do
+  exp1 <- pExp
+  optional spaces
+  char '='
+  optional spaces
+  exp2 <- pExp
+  return $ Equals exp1 exp2
+  
 
 
 
