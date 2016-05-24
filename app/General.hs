@@ -25,6 +25,8 @@ test5 = print $ findConditions $ "send + more = money"
 test6 = do
   equ:_ <- getArgs
   print $ findConditions $ fromString equ
+  
+test7 = print $ findConditions $ "give" + "me" + "rice" == "demo"
 
 main = test6
 
