@@ -31,7 +31,7 @@ instance IsString VEqu where
   fromString xs =
     case parse pEquals "verbal" xs of
       Right equ -> equ
-      Left  err -> error "error"
+      Left  err -> error (show err)
 
 equ1 :: VEqu 
 equ1 = Equals (Add (Val "debt") (Val "star")) (Val "death")
@@ -48,6 +48,9 @@ equ4 = "debt" + "star" == "death"
 equ5 :: VEqu
 equ5 = "debt + star = death"
 
+equ6 :: VEqu
+equ6 = "give + me + rice = demo"
+
 
   
 pVal :: Parser VExp
@@ -61,7 +64,7 @@ pAdd = do
   optional spaces
   char '+'
   optional spaces
-  exp2 <- pVal
+  exp2 <- pExp
   return $ Add exp1 exp2
 
 pExp :: Parser VExp
