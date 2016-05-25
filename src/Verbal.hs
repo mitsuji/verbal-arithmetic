@@ -10,8 +10,10 @@ import Prelude hiding ((+),(-),(*),(==))
 import qualified Prelude as P
 import Data.String (IsString(fromString))
 import Data.List (nub,union)
-import Text.ParserCombinators.Parsec
-import Text.ParserCombinators.Parsec.Char
+
+import qualified Text.ParserCombinators.Parsec as PS
+import Control.Applicative ((<|>))
+import Control.Monad (mzero)
 
 
 data VExp = Val [Char]
@@ -29,7 +31,7 @@ instance IsString VExp where
   
 instance IsString VEqu where
   fromString xs =
-    case parse pEquals "verbal" xs of
+    case PS.parse pEquals "verbal" xs of
       Right equ -> equ
       Left  err -> error (show err)
 
@@ -49,33 +51,42 @@ equ5 :: VEqu
 equ5 = "debt + star = death"
 
 equ6 :: VEqu
-equ6 = "give + me + rice = demo"
+equ6 = Val "give" `Add` Val "me" `Add` Val "rice" `Equals` Val "demo"
+
+equ7 :: VEqu
+equ7 = "give" + "me" + "rice" == "demo"
+
+equ8 :: VEqu
+equ8  = "give + me + rice = demo"
+
 
 
   
-pVal :: Parser VExp
+pVal :: PS.Parser VExp
 pVal = do
-  xs <- many1 $ letter <|> alphaNum
+  xs <- PS.many1 $ PS.letter <|> PS.alphaNum
   return $ Val xs
 
-pAdd :: Parser VExp
-pAdd = do
-  exp1 <- pVal
-  optional spaces
-  char '+'
-  optional spaces
-  exp2 <- pExp
-  return $ Add exp1 exp2
+pAdd :: PS.Parser (VExp -> VExp -> VExp)
+pAdd = PS.char '+' >> return Add
 
-pExp :: Parser VExp
-pExp = try pAdd <|> pVal
+pExp :: PS.Parser VExp
+pExp = pValS `PS.chainl1` pOpS
+  where
+    pValS = do
+      val <- pVal
+      PS.spaces
+      return val
+    pOpS = do
+      op <- pAdd <|> mzero
+      PS.spaces
+      return op
 
-pEquals :: Parser VEqu
+pEquals :: PS.Parser VEqu
 pEquals = do
   exp1 <- pExp
-  optional spaces
-  char '='
-  optional spaces
+  PS.char '='
+  PS.spaces
   exp2 <- pExp
   return $ Equals exp1 exp2
   
